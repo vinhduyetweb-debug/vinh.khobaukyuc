@@ -20,3 +20,15 @@
 
 ## Lưu ý
 Bản V1 test/list thư mục root public bằng API Key. Quét đệ quy và OAuth private folder sẽ là bản Pro.
+
+
+## V2 bo sung
+- Moi muc timeline co nut `+` de them ky niem nhanh theo dung tuoi.
+- Hien thi khung duong dan luu tru chinh.
+- Copy root path `KHOBAUKYUC/`.
+- Copy duong dan tuoi dang xem.
+- Copy checklist backup thu cong.
+- Button mo thu muc Google Drive goc.
+- Button mo thu muc tuoi dang xem / backup: V2 mo root Drive; ban Pro se map chinh xac folder con bang Drive API.
+- Moi ky niem co nut xuat file ghi chu TXT.
+- Goi y ten file theo chuan `YYMMDD_su-kien_001.jpg`.

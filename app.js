@@ -41,3 +41,163 @@ function saveSettings(){const root=$("rootFolderInput").value.trim();if(root!==R
 function storyMode(){const list=filteredMemories();if(!list.length){toast("Chua co ky niem de chay story");return}let i=0;const o=document.createElement("div");o.className="story";const render=()=>{const m=list[i%list.length],img=m.photos?.[0]?.dataUrl;o.innerHTML=`<button class="secondary storyClose">Dong</button><div class="storyText">${img?`<img src="${img}">`:"<div style='font-size:90px'>💖</div>"}<h2>${esc(m.title)}</h2><p>${m.date_code} • ${m.age_stage}</p><p>${esc(m.note||"")}</p></div>`;o.querySelector(".storyClose").onclick=()=>o.remove();i++};render();document.body.appendChild(o);const timer=setInterval(()=>{if(!document.body.contains(o)){clearInterval(timer);return}render()},4500)}
 $("addBtn").onclick=()=>openEditor();$("closeEditorBtn").onclick=closeEditor;$("saveMemoryBtn").onclick=saveMemory;$("deleteMemoryBtn").onclick=deleteCurrent;$("dateInput").onchange=()=>{$("dateCodeInput").value=yymmddFromDate($("dateInput").value)};$("ageInput").onchange=folderHint;$("eventInput").onchange=folderHint;$("settingsBtn").onclick=openSettings;$("closeSettingsBtn").onclick=()=>$("settings").classList.remove("open");$("saveSettingsBtn").onclick=saveSettings;$("testDriveBtn").onclick=testDrivePublic;$("backupBtn").onclick=exportBackup;$("importBtn").onclick=()=>$("importInput").click();$("importInput").onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0])};$("copyStructureBtn").onclick=copyStructure;$("checkStructureBtn").onclick=checkStructure;$("syncDriveBtn").onclick=syncDrivePublic;$("searchInput").oninput=renderGrid;$("ageFilter").onchange=e=>{currentAge=e.target.value;renderAll()};$("typeFilter").onchange=renderGrid;$("clearBtn").onclick=()=>{$("searchInput").value="";$("typeFilter").value="all";currentAge="all";renderAll()};$("storyBtn").onclick=storyMode;$("closeViewerBtn").onclick=()=>$("viewer").classList.remove("open");$("viewer").onclick=e=>{if(e.target.id==="viewer")$("viewer").classList.remove("open")};["editor","settings"].forEach(id=>$(id).onclick=e=>{if(e.target.id===id)$(id).classList.remove("open")});
 (async()=>{db=await openDB();initSelects();folderHint();await refresh()})();
+
+
+/* ===== KHOBAUKYUC V2 upgrades ===== */
+function agePath(age=currentAge){
+  const a = age && age !== "all" ? age : "06_07_TUOI";
+  return `${ROOT}/${a}/`;
+}
+function ageSubPaths(age=currentAge){
+  const a = age && age !== "all" ? age : "06_07_TUOI";
+  return [
+    `${ROOT}/${a}/`,
+    `${ROOT}/${a}/ANH_OFFLINE/`,
+    `${ROOT}/${a}/ANH_GOC_GOOGLEDRIVE/`,
+    `${ROOT}/${a}/VIDEO_YOUTUBE/`,
+    `${ROOT}/${a}/GHICHU/`,
+    `${ROOT}/00_CONFIG/backup/`
+  ];
+}
+function updateCurrentPathBox(){
+  if(!$("currentPathText")) return;
+  const a = currentAge && currentAge !== "all" ? currentAge : "06_07_TUOI";
+  $("currentPathText").textContent = ageSubPaths(a).join("\n");
+}
+function copyText(text,msg="Da copy"){
+  navigator.clipboard.writeText(text);
+  toast(msg);
+}
+function openUrl(url,msg){
+  if(!url){toast(msg||"Chua co link Google Drive trong Cai dat");return}
+  window.open(url,"_blank");
+}
+function backupChecklist(){
+  const a = currentAge && currentAge !== "all" ? currentAge : "06_07_TUOI";
+  return [
+    "CHECKLIST BACKUP THU CONG - KHOBAUKYUC",
+    "",
+    "1. Bam nut Backup trong app de tai file JSON.",
+    `2. Luu file backup vao: ${ROOT}/00_CONFIG/backup/`,
+    `3. Anh goc luu vao: ${ROOT}/${a}/ANH_GOC_GOOGLEDRIVE/`,
+    `4. Video YouTube luu link vao: ${ROOT}/${a}/VIDEO_YOUTUBE/`,
+    `5. Ghi chu su kien luu vao: ${ROOT}/${a}/GHICHU/`,
+    "6. Dinh ky copy memories.json/backup JSON len Google Drive.",
+    "",
+    "Quy tac ten file:",
+    "YYMMDD_su-kien_001.jpg",
+    "YYMMDD_su-kien_youtube.txt",
+    "YYMMDD_su-kien_ghichu.txt"
+  ].join("\n");
+}
+function suggestedFileNames(){
+  const dateCode = ($("dateCodeInput")?.value || yymmddFromDate($("dateInput")?.value || "") || "260509").trim();
+  const eventSlug = slug($("titleInput")?.value || $("eventInput")?.value || "ky-niem");
+  return [
+    `${dateCode}_${eventSlug}_001.jpg`,
+    `${dateCode}_${eventSlug}_youtube.txt`,
+    `${dateCode}_${eventSlug}_ghichu.txt`,
+    `${dateCode}_${eventSlug}_backup.json`
+  ].join("\n");
+}
+function updateFileSuggest(){
+  let box = document.getElementById("fileSuggestBox");
+  if(!box && $("folderHintText")){
+    box = document.createElement("div");
+    box.id = "fileSuggestBox";
+    box.className = "fileSuggest";
+    $("folderHintText").parentElement.appendChild(box);
+  }
+  if(box) box.innerHTML = `<b>Ten file goi y:</b><pre>${suggestedFileNames()}</pre>`;
+}
+const _oldFolderHint = folderHint;
+folderHint = function(){
+  _oldFolderHint();
+  updateFileSuggest();
+};
+const _oldOpenEditor = openEditor;
+openEditor = function(id=null, presetAge=null){
+  _oldOpenEditor(id);
+  if(!id && presetAge){
+    $("ageInput").value = presetAge;
+    folderHint();
+  }
+  updateFileSuggest();
+};
+const _oldRenderAges = renderAges;
+renderAges = function(){
+  const counts=Object.fromEntries(AGE_STAGES.map(a=>[a,memories.filter(m=>m.age_stage===a).length]));
+  $("ageList").innerHTML=`<button class="ageBtn ${currentAge==="all"?"active":""}" data-age="all"><div class="ageBtnRow"><button class="ageBtnMain" data-age-main="all">TAT_CA<small>${memories.length} ky niem</small></button><button class="ageAddBtn" data-age-add="06_07_TUOI">+</button></div></button>`+
+  AGE_STAGES.map(a=>`<button class="ageBtn ${currentAge===a?"active":""}" data-age="${a}"><div class="ageBtnRow"><button class="ageBtnMain" data-age-main="${a}">${a}<small>${counts[a]} ky niem</small></button><button class="ageAddBtn" data-age-add="${a}">+</button></div></button>`).join("");
+  document.querySelectorAll("[data-age-main]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();currentAge=b.dataset.ageMain;renderAll()});
+  document.querySelectorAll("[data-age-add]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();openEditor(null,b.dataset.ageAdd)});
+  updateCurrentPathBox();
+};
+const _oldRenderGrid = renderGrid;
+renderGrid = function(){
+  _oldRenderGrid();
+  document.querySelectorAll(".cardActions").forEach(actions=>{
+    const id = actions.querySelector(".view")?.dataset.id;
+    if(id && !actions.querySelector(".noteExport")){
+      const btn = document.createElement("button");
+      btn.className = "mini noteExport";
+      btn.textContent = "Xuat TXT";
+      btn.onclick = () => exportMemoryTxt(id);
+      actions.appendChild(btn);
+    }
+  });
+  updateCurrentPathBox();
+};
+function exportMemoryTxt(id){
+  const m = memories.find(x=>x.id===id);
+  if(!m) return;
+  const eventSlug = slug(m.title || m.event_type || "ky-niem");
+  const filename = `${m.date_code || "260509"}_${eventSlug}_ghichu.txt`;
+  const content = [
+    "KHOBAUKYUC - GHICHU KY NIEM",
+    "",
+    `ID: ${m.id}`,
+    `Ngay: ${m.date_code}`,
+    `Tuoi: ${m.age_stage}`,
+    `Su kien: ${m.event_type}`,
+    `Tieu de: ${m.title}`,
+    `Cam xuc: ${m.emotion}`,
+    `Tags: ${(m.tags||[]).join(", ")}`,
+    "",
+    "Ghi chu:",
+    m.note || "",
+    "",
+    `Google Drive anh: ${m.drive_image_folder || ""}`,
+    `YouTube: ${m.youtube_link || ""}`,
+    `Google Drive video: ${m.drive_video_link || ""}`,
+    "",
+    "Thu muc goi y:",
+    m.suggested_folders ? Object.values(m.suggested_folders).join("\n") : ageSubPaths(m.age_stage).join("\n")
+  ].join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type:"text/plain;charset=utf-8"}));
+  a.download=filename;
+  a.click();
+  toast("Da xuat file ghi chu TXT");
+}
+function folderUrlForAge(age){
+  // V2 opens root Drive link because subfolder URL needs Drive API mapping.
+  return settings.driveRootUrl || "";
+}
+function bindV2Buttons(){
+  if($("openRootDriveBtn")) $("openRootDriveBtn").onclick=()=>openUrl(settings.driveRootUrl,"Chua nhap link KHOBAUKYUC trong Cai dat");
+  if($("openAgeDriveBtn")) $("openAgeDriveBtn").onclick=()=>openUrl(folderUrlForAge(currentAge),"Ban V2 mo root Drive. Ban Pro se map chinh xac folder tuoi bang API.");
+  if($("openBackupDriveBtn")) $("openBackupDriveBtn").onclick=()=>openUrl(settings.driveRootUrl,"Chua nhap link KHOBAUKYUC trong Cai dat");
+  if($("copyRootPathBtn")) $("copyRootPathBtn").onclick=()=>copyText(`${ROOT}/`,"Da copy root path");
+  if($("copyAgePathBtn")) $("copyAgePathBtn").onclick=()=>copyText(ageSubPaths(currentAge).join("\n"),"Da copy duong dan tuoi dang xem");
+  if($("copyBackupChecklistBtn")) $("copyBackupChecklistBtn").onclick=()=>copyText(backupChecklist(),"Da copy checklist backup");
+}
+["dateCodeInput","dateInput","titleInput","eventInput"].forEach(id=>{
+  setTimeout(()=>{ if($(id)) $(id).addEventListener("input", updateFileSuggest); },0);
+});
+const _oldRenderAll = renderAll;
+renderAll = function(){
+  _oldRenderAll();
+  updateCurrentPathBox();
+};
+setTimeout(()=>{bindV2Buttons();updateCurrentPathBox();},300);
