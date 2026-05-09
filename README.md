@@ -32,3 +32,13 @@ Bản V1 test/list thư mục root public bằng API Key. Quét đệ quy và OA
 - Button mo thu muc tuoi dang xem / backup: V2 mo root Drive; ban Pro se map chinh xac folder con bang Drive API.
 - Moi ky niem co nut xuat file ghi chu TXT.
 - Goi y ten file theo chuan `YYMMDD_su-kien_001.jpg`.
+
+
+## V3 bo sung File System Engine
+- Nut `Chon thu muc KHOBAUKYUC` de chon thu muc that tren may neu trinh duyet ho tro.
+- App tu tao cau truc thu muc con trong thu muc da chon.
+- Anh offline moi van luu IndexedDB, dong thoi neu co thu muc that se ghi them file JPG vao:
+  `KHOBAUKYUC/XX_YY_TUOI/ANH_OFFLINE/`
+- Nut `Luu anh hien co ra thu muc` de dong bo anh da luu trong IndexedDB ra thu muc that.
+- Nut `Export ZIP` de xuat toan bo cau truc KHOBAUKYUC kem anh offline, ghi chu TXT, memories.json.
+- Fallback cho iPhone/iPad: neu Safari khong ho tro chon thu muc, dung IndexedDB + Export ZIP.

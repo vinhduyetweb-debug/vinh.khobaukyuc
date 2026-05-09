@@ -201,3 +201,232 @@ renderAll = function(){
   updateCurrentPathBox();
 };
 setTimeout(()=>{bindV2Buttons();updateCurrentPathBox();},300);
+
+
+
+/* ===== KHOBAUKYUC V3 File System Engine ===== */
+let offlineDirHandle = null;
+let offlineMode = "indexeddb";
+
+function fsSupported(){
+  return "showDirectoryPicker" in window;
+}
+function updateFsStatus(){
+  if(!$("fsStatus")) return;
+  if(fsSupported() && offlineDirHandle){
+    $("fsStatus").textContent = "Da chon thu muc offline that. Anh moi se duoc luu ra thu muc neu trinh duyet cho phep.";
+    $("fsStatus").className = "fsOk";
+    offlineMode = "filesystem";
+  } else if(fsSupported()){
+    $("fsStatus").textContent = "Trinh duyet ho tro chon thu muc. Hay bam Chon thu muc KHOBAUKYUC de luu file that.";
+    $("fsStatus").className = "fsWarn";
+    offlineMode = "indexeddb";
+  } else {
+    $("fsStatus").textContent = "Trinh duyet nay chua ho tro mo/ghi thu muc that. App se dung IndexedDB va Export ZIP de backup.";
+    $("fsStatus").className = "fsWarn";
+    offlineMode = "indexeddb";
+  }
+  if($("offlinePathText")){
+    const a = currentAge && currentAge !== "all" ? currentAge : "06_07_TUOI";
+    $("offlinePathText").textContent = [
+      `${ROOT}/`,
+      `${ROOT}/${a}/ANH_OFFLINE/`,
+      `${ROOT}/${a}/ANH_GOC_GOOGLEDRIVE/`,
+      `${ROOT}/${a}/VIDEO_YOUTUBE/`,
+      `${ROOT}/${a}/GHICHU/`,
+      `${ROOT}/00_CONFIG/backup/`
+    ].join("\n");
+  }
+}
+
+async function chooseOfflineFolder(){
+  if(!fsSupported()){
+    toast("Trinh duyet khong ho tro chon thu muc that. Hay dung Chrome/Edge Android/Windows hoac Export ZIP.");
+    return;
+  }
+  try{
+    const handle = await window.showDirectoryPicker({mode:"readwrite"});
+    offlineDirHandle = handle;
+    await ensureFolderStructure(handle);
+    toast("Da chon va tao cau truc thu muc offline.");
+    updateFsStatus();
+  }catch(e){
+    toast("Chua chon thu muc: " + (e.message || ""));
+  }
+}
+
+async function getOrCreateDir(parent, name){
+  return await parent.getDirectoryHandle(name, {create:true});
+}
+async function ensureFolderStructure(rootHandle){
+  const config = await getOrCreateDir(rootHandle, "00_CONFIG");
+  await getOrCreateDir(config, "backup");
+  for(const a of AGE_STAGES){
+    const ageDir = await getOrCreateDir(rootHandle, a);
+    await getOrCreateDir(ageDir, "ANH_OFFLINE");
+    await getOrCreateDir(ageDir, "ANH_GOC_GOOGLEDRIVE");
+    await getOrCreateDir(ageDir, "VIDEO_YOUTUBE");
+    await getOrCreateDir(ageDir, "GHICHU");
+  }
+  const sk = await getOrCreateDir(rootHandle, "SU_KIEN_DAC_BIET");
+  for(const e of EVENT_TYPES) await getOrCreateDir(sk, e);
+  await writeTextFile(config, "folder_map.json", JSON.stringify({root:ROOT,date_format:"YYMMDD",age_stages:AGE_STAGES,event_types:EVENT_TYPES,folder_structure:FOLDER_STRUCTURE}, null, 2));
+}
+async function writeTextFile(dirHandle, filename, text){
+  const f = await dirHandle.getFileHandle(filename, {create:true});
+  const w = await f.createWritable();
+  await w.write(text);
+  await w.close();
+}
+async function writeBlobFile(dirHandle, filename, blob){
+  const f = await dirHandle.getFileHandle(filename, {create:true});
+  const w = await f.createWritable();
+  await w.write(blob);
+  await w.close();
+}
+function dataUrlToBlob(dataUrl){
+  const [meta, data] = dataUrl.split(",");
+  const mime = (meta.match(/data:(.*?);base64/)||[])[1] || "image/jpeg";
+  const bin = atob(data);
+  const arr = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  return new Blob([arr], {type:mime});
+}
+function safeFileBase(memory){
+  return `${memory.date_code || "260509"}_${slug(memory.title || memory.event_type || "ky-niem")}`;
+}
+async function saveMemoryFilesToFolder(memory){
+  if(!offlineDirHandle) return false;
+  try{
+    await ensureFolderStructure(offlineDirHandle);
+    const ageDir = await getOrCreateDir(offlineDirHandle, memory.age_stage || "06_07_TUOI");
+    const imgDir = await getOrCreateDir(ageDir, "ANH_OFFLINE");
+    const noteDir = await getOrCreateDir(ageDir, "GHICHU");
+    const base = safeFileBase(memory);
+
+    for(let i=0;i<(memory.photos||[]).length;i++){
+      const p = memory.photos[i];
+      if(p.saved_to_filesystem) continue;
+      const blob = dataUrlToBlob(p.dataUrl);
+      const filename = `${base}_${String(i+1).padStart(3,"0")}.jpg`;
+      await writeBlobFile(imgDir, filename, blob);
+      p.filesystem_path = `${ROOT}/${memory.age_stage}/ANH_OFFLINE/${filename}`;
+      p.saved_to_filesystem = true;
+    }
+
+    const noteText = memoryTxtContent(memory);
+    await writeTextFile(noteDir, `${base}_ghichu.txt`, noteText);
+
+    const config = await getOrCreateDir(offlineDirHandle, "00_CONFIG");
+    const backup = await getOrCreateDir(config, "backup");
+    const miniBackup = {app_name:"KHOBAUKYUC",version:"3.0",root_folder:ROOT,exported_at:new Date().toISOString(),memories:[memory]};
+    await writeTextFile(backup, `${memory.date_code || "260509"}_${slug(memory.title)}_backup.json`, JSON.stringify(miniBackup,null,2));
+    return true;
+  }catch(e){
+    toast("Loi luu ra thu muc: " + e.message);
+    return false;
+  }
+}
+function memoryTxtContent(m){
+  return [
+    "KHOBAUKYUC - GHICHU KY NIEM",
+    "",
+    `ID: ${m.id}`,
+    `Ngay: ${m.date_code}`,
+    `Tuoi: ${m.age_stage}`,
+    `Su kien: ${m.event_type}`,
+    `Tieu de: ${m.title}`,
+    `Cam xuc: ${m.emotion}`,
+    `Tags: ${(m.tags||[]).join(", ")}`,
+    "",
+    "Ghi chu:",
+    m.note || "",
+    "",
+    `Google Drive anh: ${m.drive_image_folder || ""}`,
+    `YouTube: ${m.youtube_link || ""}`,
+    `Google Drive video: ${m.drive_video_link || ""}`,
+    "",
+    "Thu muc goi y:",
+    m.suggested_folders ? Object.values(m.suggested_folders).join("\n") : ageSubPaths(m.age_stage).join("\n")
+  ].join("\n");
+}
+
+const __oldSaveMemoryV3 = saveMemory;
+saveMemory = async function(){
+  const dateIso=$("dateInput").value;
+  const dateCode=($("dateCodeInput").value||yymmddFromDate(dateIso)).trim();
+  await __oldSaveMemoryV3();
+  // Try filesystem save after IndexedDB save completed.
+  try{
+    const saved = memories.find(m => m.date_code === dateCode && slug(m.title) === slug($("titleInput").value.trim()||"Ky niem")) || memories[0];
+    if(saved && offlineDirHandle){
+      const ok = await saveMemoryFilesToFolder(saved);
+      if(ok){ await putMemory(saved); await refresh(); toast("Da luu them file that vao thu muc offline.");}
+    }
+  }catch(e){}
+};
+
+async function saveExistingPhotosToFolder(){
+  if(!offlineDirHandle){
+    await chooseOfflineFolder();
+    if(!offlineDirHandle) return;
+  }
+  let count=0;
+  for(const m of memories){
+    const ok = await saveMemoryFilesToFolder(m);
+    if(ok){ await putMemory(m); count++; }
+  }
+  await refresh();
+  toast(`Da dong bo ${count} ky niem ra thu muc offline.`);
+}
+
+async function exportZipBackup(){
+  if(!window.JSZip){
+    toast("Can internet lan dau de tai JSZip hoac dung Backup JSON.");
+    exportBackup();
+    return;
+  }
+  const zip = new JSZip();
+  const rootZip = zip.folder(ROOT);
+  rootZip.folder("00_CONFIG").folder("backup");
+  for(const a of AGE_STAGES){
+    const ad=rootZip.folder(a);
+    ad.folder("ANH_OFFLINE"); ad.folder("ANH_GOC_GOOGLEDRIVE"); ad.folder("VIDEO_YOUTUBE"); ad.folder("GHICHU");
+  }
+  const sk=rootZip.folder("SU_KIEN_DAC_BIET");
+  EVENT_TYPES.forEach(e=>sk.folder(e));
+
+  const backup={app_name:"KHOBAUKYUC",version:"3.0",root_folder:ROOT,exported_at:new Date().toISOString(),folder_structure:FOLDER_STRUCTURE,settings,memories};
+  rootZip.folder("00_CONFIG").file("memories.json", JSON.stringify(backup,null,2));
+  rootZip.folder("00_CONFIG").file("folder_map.json", JSON.stringify({root:ROOT,date_format:"YYMMDD",age_stages:AGE_STAGES,event_types:EVENT_TYPES},null,2));
+
+  for(const m of memories){
+    const age=m.age_stage||"06_07_TUOI";
+    const base=safeFileBase(m);
+    const ageFolder=rootZip.folder(age);
+    ageFolder.folder("GHICHU").file(`${base}_ghichu.txt`, memoryTxtContent(m));
+    for(let i=0;i<(m.photos||[]).length;i++){
+      const p=m.photos[i], blob=dataUrlToBlob(p.dataUrl);
+      ageFolder.folder("ANH_OFFLINE").file(`${base}_${String(i+1).padStart(3,"0")}.jpg`, blob);
+    }
+  }
+  const out = await zip.generateAsync({type:"blob"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(out);
+  a.download=`${yymmddFromDate(new Date().toISOString().slice(0,10))}_KHOBAUKYUC_backup.zip`;
+  a.click();
+  toast("Da export ZIP KHOBAUKYUC.");
+}
+
+function bindV3Buttons(){
+  if($("chooseOfflineFolderBtn")) $("chooseOfflineFolderBtn").onclick=chooseOfflineFolder;
+  if($("saveExistingPhotosBtn")) $("saveExistingPhotosBtn").onclick=saveExistingPhotosToFolder;
+  if($("exportZipBtn")) $("exportZipBtn").onclick=exportZipBackup;
+  if($("copyOfflinePathBtn")) $("copyOfflinePathBtn").onclick=()=>copyText($("offlinePathText")?.textContent || `${ROOT}/`, "Da copy offline path");
+}
+const __oldRenderAllV3 = renderAll;
+renderAll = function(){
+  __oldRenderAllV3();
+  updateFsStatus();
+};
+setTimeout(()=>{bindV3Buttons();updateFsStatus();},500);
