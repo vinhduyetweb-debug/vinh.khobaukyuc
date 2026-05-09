@@ -1,0 +1,9 @@
+{
+  "name": "KHOBAUKYUC",
+  "short_name": "KHOBAUKYUC",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff6fb",
+  "theme_color": "#ffe9f4",
+  "orientation": "portrait"
+}

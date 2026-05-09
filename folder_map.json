@@ -1,0 +1,36 @@
+{
+  "root": "KHOBAUKYUC",
+  "date_format": "YYMMDD",
+  "age_stages": [
+    "00_01_TUOI",
+    "01_02_TUOI",
+    "02_03_TUOI",
+    "03_04_TUOI",
+    "04_05_TUOI",
+    "05_06_TUOI",
+    "06_07_TUOI",
+    "07_08_TUOI",
+    "08_09_TUOI",
+    "09_10_TUOI",
+    "10_11_TUOI",
+    "11_12_TUOI",
+    "12_13_TUOI",
+    "13_14_TUOI",
+    "14_15_TUOI",
+    "15_16_TUOI",
+    "16_17_TUOI",
+    "17_18_TUOI"
+  ],
+  "event_types": [
+    "SINHNHAT",
+    "NGAYDAUDIHOC",
+    "GIADINH",
+    "DULICH",
+    "THANHTICH",
+    "ONGBA",
+    "TET",
+    "DIHOC",
+    "VUICHOI",
+    "KHAC"
+  ]
+}
