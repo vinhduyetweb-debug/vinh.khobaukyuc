@@ -75,14 +75,14 @@ Manual backup checklist:
 7. Khong xoa du lieu trong trinh duyet cho den khi da mo thu file backup tren may khac hoac profile khac.
 
 Known limitations:
-- ZIP export van phu thuoc JSZip CDN.
+- ZIP export dung JSZip local tai `vendor/jszip.min.js`; neu file nay bi thieu thi app se fallback ve JSON backup.
 - File System Access API phu thuoc trinh duyet.
 - iPhone/Safari dung IndexedDB + JSON/ZIP export fallback.
 - Google Drive hien van o muc public/API-key/link based, chua co OAuth.
 - Chua co automated test suite.
 
 Huong tiep theo: `KHOBAUKYUC V5 STORAGE & DRIVE PRO`
-- Local bundled ZIP library.
+- V5.1 Local bundled ZIP library: da chuyen JSZip sang file local `vendor/jszip.min.js`.
 - Storage quota dashboard.
 - Backup integrity checksums.
 - Optional Drive folder mapping.

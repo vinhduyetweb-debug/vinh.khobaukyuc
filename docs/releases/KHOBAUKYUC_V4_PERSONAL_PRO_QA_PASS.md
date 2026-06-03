@@ -62,7 +62,7 @@ This checkpoint marks KHOBAUKYUC V4 Personal Pro as stable enough to preserve be
 
 ## Known Limitations
 
-- ZIP export depends on JSZip CDN availability.
+- ZIP export now uses the local JSZip bundle at `vendor/jszip.min.js`; if the file is missing or fails to load, the app still falls back to JSON backup.
 - File System Access API support depends on the browser.
 - Safari and iPhone users should rely on IndexedDB plus JSON/ZIP export fallback.
 - Google Drive support is currently public/API-key/link based.
