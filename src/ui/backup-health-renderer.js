@@ -3,6 +3,7 @@ import {
   formatBytes,
   getStorageRiskLevel,
 } from "../services/storage-quota-service.js";
+import { getMediaStorageSummary } from "../services/media-storage-strategy-service.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -68,6 +69,7 @@ export function renderBackupHealth(
   $("healthBackupStatus").className = `backupStatus ${health.status.className}`;
   $("healthChecklistText").textContent = checklistText;
   renderBrowserStorage(storageEstimate);
+  renderMediaStrategy(memories, storageEstimate);
 }
 
 export function bindBackupHealthActions({
@@ -88,6 +90,22 @@ function getBackupStatus(daysSinceBackup) {
     return { label: "Should backup", className: "should" };
   }
   return { label: "Safe", className: "safe" };
+}
+
+function renderMediaStrategy(memories, storageEstimate) {
+  const summary = getMediaStorageSummary(memories, storageEstimate);
+  $("mediaOfflinePhotoCount").textContent = summary.totalOfflinePhotos;
+  $("mediaOfflinePhotoSize").textContent = formatBytes(summary.estimatedPhotoBytes);
+  $("mediaDriveImageLinks").textContent = summary.totalDriveImageLinks;
+  $("mediaYoutubeLinks").textContent = summary.totalYoutubeLinks;
+  $("mediaDriveVideoLinks").textContent = summary.totalDriveVideoLinks;
+  $("mediaBrowserUsage").textContent =
+    summary.storagePercentage === null
+      ? "Chua ho tro"
+      : `${summary.storagePercentage.toFixed(1)}%`;
+  $("mediaRiskLevel").textContent = summary.risk.label;
+  $("mediaRiskLevel").className = `backupStatus ${summary.risk.className}`;
+  $("mediaRecommendation").textContent = summary.risk.recommendation;
 }
 
 function renderBrowserStorage(storageEstimate) {

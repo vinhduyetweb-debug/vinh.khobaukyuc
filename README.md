@@ -145,3 +145,40 @@ Khuyen nghi an toan:
 - Luon export JSON/ZIP hien tai truoc khi import backup khac.
 - Neu chi muon kiem tra backup, chon Cancel trong preview.
 - Backup cu khong co manifest van import duoc, nhung can xem canh bao ky hon.
+
+## KHOBAUKYUC V5.5 - Long-term Media Storage Strategy
+
+V5.5 them phan chien luoc luu anh/video dai han trong Backup/Storage Health.
+
+Nguyen tac:
+- Anh nen trong app chi nen dung de xem nhanh.
+- Anh/video goc nen luu o Google Drive, o cung ngoai, NAS hoac thu muc backup rieng.
+- Video nen luu bang link YouTube/Google Drive thay vi nhung truc tiep vao app.
+- Trinh duyet khong phai kho luu tru vinh vien.
+- Khong nen dua toan bo ky uc 0-18 nam vao IndexedDB ma khong co backup ngoai.
+
+Media risk dashboard hien thi:
+- tong anh offline.
+- dung luong anh offline uoc tinh.
+- tong link anh Google Drive.
+- tong link YouTube.
+- tong link video Google Drive.
+- phan tram dung luong trinh duyet neu trinh duyet ho tro.
+
+Muc rui ro:
+- `Thap`: anh offline duoi 100 MB va dung luong trinh duyet duoi 50%.
+- `Trung binh`: anh offline 100-500 MB hoac dung luong trinh duyet 50-75%.
+- `Cao`: anh offline 500 MB-1 GB hoac dung luong trinh duyet 75-90%.
+- `Nguy cap`: anh offline tren 1 GB hoac dung luong trinh duyet tu 90% tro len.
+
+ZIP backup co them file khong bat buoc:
+- `KHOBAUKYUC/00_CONFIG/media_storage_strategy.txt`
+
+File nay chi la ghi chu huong dan luu tru dai han, khong thay doi dinh dang backup JSON va khong anh huong import.
+
+Checklist khuyen nghi:
+- Export ZIP moi thang.
+- Export JSON sau moi lan nhap nhieu ky uc.
+- Luu anh/video goc o it nhat 2 noi.
+- Kiem tra file ZIP mo duoc sau khi export.
+- Khong doi ten JSON thanh ZIP thu cong.

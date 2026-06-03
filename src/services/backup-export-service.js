@@ -7,6 +7,7 @@ import { downloadBlob } from "../utils/dom.js";
 import { safeFileBase } from "../utils/filename.js";
 import { isBackupData } from "../utils/validators.js";
 import { createBackupPackage } from "./backup-manifest-service.js";
+import { mediaStorageStrategyText } from "./media-storage-strategy-service.js";
 import {
   normalizeChildProfile,
   normalizeFutureLetter,
@@ -137,6 +138,9 @@ export async function exportZipBackup(
   rootZip
     .folder("00_CONFIG")
     .file("backup_manifest.json", JSON.stringify(backup.manifest, null, 2));
+  rootZip
+    .folder("00_CONFIG")
+    .file("media_storage_strategy.txt", mediaStorageStrategyText(backup.exported_at));
   rootZip.folder("00_CONFIG").file(
     "folder_map.json",
     JSON.stringify(

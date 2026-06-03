@@ -34,6 +34,9 @@
 .storageHelpText{margin:0;color:#8b6a16;background:#fff7e2;border:1px solid #ffe2ae;border-radius:16px;padding:10px;font-size:13px;line-height:1.45}
 .manifestHealthNote{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;background:#fffaff;border:1px solid #ffe0f0;border-radius:16px;padding:10px}
 .manifestHealthNote div{min-width:0}.manifestHealthNote b{display:block;color:#9b4d7e;font-size:14px;overflow-wrap:anywhere}.manifestHealthNote span{display:block;color:#9b7790;font-size:12px;margin-top:3px}.manifestHealthNote p{grid-column:1/-1;margin:0;color:#7f5570;font-size:13px;line-height:1.45}
+.mediaStrategyBox{display:grid;gap:10px;background:#fffaff;border:1px solid #ffe0f0;border-radius:16px;padding:12px}.mediaStrategyHead{display:flex;justify-content:space-between;gap:10px;align-items:center}.mediaStrategyHead h3{margin:0;color:#88486f}
+.mediaStrategyGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.mediaStrategyGrid div{background:#fff;border:1px solid #ffe0f0;border-radius:14px;padding:10px;min-width:0}.mediaStrategyGrid b{display:block;color:#9b4d7e;font-size:16px;overflow-wrap:anywhere}.mediaStrategyGrid span{display:block;color:#9b7790;font-size:12px;margin-top:3px}
+.mediaRecommendation{margin:0;color:#8b6a16;background:#fff7e2;border:1px solid #ffe2ae;border-radius:14px;padding:10px;font-size:13px;line-height:1.45}.mediaGuidanceList{margin:0;padding-left:20px;color:#7f5570;font-size:13px;line-height:1.5}.mediaChecklistText{white-space:pre-wrap;background:#fff6fb;border:1px dashed #ffd4eb;border-radius:14px;padding:10px;margin:0;color:#7f5570;font-size:12px;line-height:1.45}
 .backupChecklistText{white-space:pre-wrap;background:#fff6fb;border:1px dashed #ffd4eb;border-radius:16px;padding:10px;margin:0;color:#7f5570;font-size:12px;line-height:1.45}
 @media(max-width:900px){.backupHealthHead{display:grid}.backupHealthGrid{grid-template-columns:repeat(2,1fr)}}
 

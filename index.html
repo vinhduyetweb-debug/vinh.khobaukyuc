@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=5.4"/></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=5.5"/></head><body>
 <main class="app">
 <header class="top"><div><h1>🎀 KHOBAUKYUC</h1><p>Ky yeu tuoi tho • Offline + Google Drive + YouTube</p></div><div class="topActions"><button id="settingsBtn" class="ghost">⚙ Cai dat</button><button id="backupBtn" class="ghost">⬇ Backup</button></div></header>
 <section class="familyHome"><div class="homeIntro"><div class="spark">✨</div><p class="homeLabel">Kho ky uc cua</p><h2>Mỹ Anh</h2><p>Luu lai tung buc anh, cau noi va khoanh khac nho de ca nha co the mo lai bat cu luc nao.</p><div class="heroActions"><button id="reopenMemoryBtn" class="primary">Mở lại một ký ức</button><button id="addTodayBtn" class="secondary">Thêm ký ức hôm nay</button><button id="addBtn" class="chip">+ Them ky niem</button><button id="storyBtn" class="chip">Story mode</button></div></div><div class="homeSide"><div class="stats"><div><b id="memoryCount">0</b><span>Ky niem</span></div><div><b id="photoCount">0</b><span>Anh offline</span></div><div><b id="onlineCount">0</b><span>Link online</span></div><div><b id="storageSize">0 MB</b><span>Dung luong</span></div></div><div class="recentBox"><h3>Ky uc gan day</h3><div id="recentMemories" class="recentMemories"><p>Chua co ky niem nao.</p></div></div></div></section>
@@ -63,6 +63,35 @@
     <div><b>SHA-256 if supported</b><span>Checksum algorithm</span></div>
     <p>Manifest giúp kiểm kê bản sao lưu. Checksum giúp phát hiện dữ liệu backup bị sai lệch.</p>
   </div>
+  <div class="mediaStrategyBox">
+    <div class="mediaStrategyHead">
+      <h3>Chiến lược lưu ảnh/video dài hạn</h3>
+      <div id="mediaRiskLevel" class="backupStatus safe">Thấp</div>
+    </div>
+    <div class="mediaStrategyGrid">
+      <div><b id="mediaOfflinePhotoCount">0</b><span>Total offline photos</span></div>
+      <div><b id="mediaOfflinePhotoSize">0 MB</b><span>Estimated offline photo size</span></div>
+      <div><b id="mediaDriveImageLinks">0</b><span>Total Google Drive image links</span></div>
+      <div><b id="mediaYoutubeLinks">0</b><span>Total YouTube links</span></div>
+      <div><b id="mediaDriveVideoLinks">0</b><span>Total Drive video links</span></div>
+      <div><b id="mediaBrowserUsage">-</b><span>Browser storage usage</span></div>
+    </div>
+    <p id="mediaRecommendation" class="mediaRecommendation">Dung lượng hiện tại còn nhẹ. Vẫn nên backup định kỳ.</p>
+    <ul class="mediaGuidanceList">
+      <li>Ảnh nén trong app chỉ nên dùng để xem nhanh.</li>
+      <li>Ảnh/video gốc nên lưu ở Google Drive, ổ cứng ngoài, NAS hoặc thư mục backup riêng.</li>
+      <li>Hãy export ZIP/JSON định kỳ.</li>
+      <li>Không nên lưu quá nhiều ảnh/video nặng trực tiếp trong trình duyệt.</li>
+      <li>Video nên lưu bằng link YouTube/Google Drive thay vì nhúng trực tiếp vào app.</li>
+    </ul>
+    <pre class="mediaChecklistText">CHECKLIST MEDIA STORAGE
+- Export ZIP mỗi tháng.
+- Export JSON sau mỗi lần nhập nhiều ký ức.
+- Lưu ảnh/video gốc ở ít nhất 2 nơi.
+- Không phụ thuộc duy nhất vào trình duyệt.
+- Kiểm tra file ZIP mở được sau khi export.
+- Không đổi tên JSON thành ZIP thủ công.</pre>
+  </div>
   <div class="backupHealthActions">
     <button id="healthExportJsonBtn" class="chip">Export JSON</button>
     <button id="healthExportZipBtn" class="chip">Export ZIP</button>
@@ -125,4 +154,4 @@
   </div>
 </div><div class="modalActions"><button id="cancelImportPreviewBtn" class="secondary">Cancel</button><button id="confirmImportPreviewBtn" class="primary">Import</button></div></div></aside>
 <script src="vendor/jszip.min.js"></script>
-<script type="module" src="src/main.js?v=5.4"></script></body></html>
+<script type="module" src="src/main.js?v=5.5"></script></body></html>
