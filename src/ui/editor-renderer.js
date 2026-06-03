@@ -51,12 +51,17 @@ export function closeEditor() {
 export function updateEditorHints() {
   const age = $("ageInput").value || DEFAULT_AGE_STAGE;
   const eventType = $("eventInput").value || "KHAC";
-  $("folderHintText").textContent = [
-    `${ROOT_FOLDER}/${age}/ANH_GOC_GOOGLEDRIVE/`,
-    `${ROOT_FOLDER}/${age}/VIDEO_YOUTUBE/`,
-    `${ROOT_FOLDER}/${age}/GHICHU/`,
-    `${ROOT_FOLDER}/SU_KIEN_DAC_BIET/${eventType}/`,
-  ].join("\n");
+  const dateCode =
+    $("dateCodeInput").value || yymmddFromDate($("dateInput").value) || "260509";
+  const titleOrEvent = $("titleInput").value || eventType || "ky-niem";
+  const filenames = suggestedFileNames(
+    dateCode,
+    titleOrEvent,
+    $("photoInput").files,
+  );
+  $("folderHintText").textContent = filenames
+    .map((filename) => suggestedDrivePath(age, filename))
+    .join("\n");
 
   let box = document.getElementById("fileSuggestBox");
   if (!box) {
@@ -65,11 +70,8 @@ export function updateEditorHints() {
     box.className = "fileSuggest";
     $("folderHintText").parentElement.appendChild(box);
   }
-  const dateCode =
-    $("dateCodeInput").value || yymmddFromDate($("dateInput").value) || "260509";
-  const titleOrEvent = $("titleInput").value || eventType || "ky-niem";
   box.innerHTML = `<b>Suggested Filename:</b><pre>${escapeHtml(
-    suggestedFileNames(dateCode, titleOrEvent).join("\n"),
+    filenames.join("\n"),
   )}</pre>`;
 }
 
@@ -135,4 +137,14 @@ function getConfiguredBirthDate() {
   } catch {
     return "";
   }
+}
+
+function suggestedDrivePath(age, filename) {
+  if (filename.includes("_VID_")) {
+    return `${ROOT_FOLDER}/${age}/VIDEO_YOUTUBE/${filename}`;
+  }
+  if (filename.includes("_IMG_")) {
+    return `${ROOT_FOLDER}/${age}/ANH_GOC_GOOGLEDRIVE/${filename}`;
+  }
+  return `${ROOT_FOLDER}/${age}/GHICHU/${filename}`;
 }

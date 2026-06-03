@@ -627,9 +627,10 @@ function bindEvents() {
   };
   $("quickModeBtn").onclick = () => setEditorMode("quick");
   $("fullModeBtn").onclick = () => setEditorMode("full");
-  ["dateCodeInput", "titleInput", "eventInput", "ageInput"].forEach((id) => {
+  ["dateCodeInput", "titleInput", "eventInput", "ageInput", "photoInput"].forEach((id) => {
     $(id).addEventListener("input", updateEditorHints);
   });
+  $("photoInput").addEventListener("change", updateEditorHints);
   $("settingsBtn").onclick = () => openSettings(settings);
   $("closeSettingsBtn").onclick = closeSettings;
   $("saveSettingsBtn").onclick = () => {

@@ -235,3 +235,30 @@ An toan du lieu:
 - Anh nen trong app van chi dung de xem nhanh.
 - Anh/video goc can luu o it nhat hai noi.
 - Du lieu tren cac dien thoai khong tu dong dong bo voi nhau.
+
+## KHOBAUKYUC V6.0.1 - File Naming Standard V1
+
+Suggested Filename trong Quick Add va Full Editor dung dinh dang:
+
+```text
+YYMMDD_TYPE_EVENT-SLUG_SEQUENCE.EXT
+```
+
+Vi du:
+
+```text
+240905_IMG_NGAY-DAU-DEN-TRUONG_0001.jpg
+240905_IMG_NGAY-DAU-DEN-TRUONG_0002.jpg
+240905_VID_NGAY-DAU-DEN-TRUONG_0001.mp4
+240905_PDF_GIAY-KHEN-HOC-KY-1_0001.pdf
+```
+
+Quy tac:
+- `TYPE`: `IMG`, `VID`, `PDF`, `AUD`.
+- Event slug bo dau tieng Viet, viet hoa va dung dau `-`.
+- Sequence co 4 chu so, bat dau tu `0001`.
+- Extension goc duoc giu lai khi file da chon co ten file.
+- Suggested Drive Path hien thi kem ten file de de copy dung vi tri.
+
+V6.0.1 chi thay doi goi y ten file. Khong thay doi IndexedDB schema, backup,
+import, export, manifest, checksum hoac Restore Preview.
