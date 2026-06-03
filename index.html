@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=5.2"/></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=5.4"/></head><body>
 <main class="app">
 <header class="top"><div><h1>🎀 KHOBAUKYUC</h1><p>Ky yeu tuoi tho • Offline + Google Drive + YouTube</p></div><div class="topActions"><button id="settingsBtn" class="ghost">⚙ Cai dat</button><button id="backupBtn" class="ghost">⬇ Backup</button></div></header>
 <section class="familyHome"><div class="homeIntro"><div class="spark">✨</div><p class="homeLabel">Kho ky uc cua</p><h2>Mỹ Anh</h2><p>Luu lai tung buc anh, cau noi va khoanh khac nho de ca nha co the mo lai bat cu luc nao.</p><div class="heroActions"><button id="reopenMemoryBtn" class="primary">Mở lại một ký ức</button><button id="addTodayBtn" class="secondary">Thêm ký ức hôm nay</button><button id="addBtn" class="chip">+ Them ky niem</button><button id="storyBtn" class="chip">Story mode</button></div></div><div class="homeSide"><div class="stats"><div><b id="memoryCount">0</b><span>Ky niem</span></div><div><b id="photoCount">0</b><span>Anh offline</span></div><div><b id="onlineCount">0</b><span>Link online</span></div><div><b id="storageSize">0 MB</b><span>Dung luong</span></div></div><div class="recentBox"><h3>Ky uc gan day</h3><div id="recentMemories" class="recentMemories"><p>Chua co ky niem nao.</p></div></div></div></section>
@@ -98,5 +98,31 @@
 <aside id="viewer" class="modal"><div class="viewerPanel"><div class="modalHead"><h3 id="viewerTitle">Ky niem</h3><button id="closeViewerBtn" class="xbtn">×</button></div><div id="viewerBody" class="viewerBody"></div></div></aside>
 <aside id="futureLetterEditor" class="modal"><div class="modalPanel"><div class="modalHead"><h3 id="letterEditorTitle">Viet thu gui con</h3><button id="closeLetterEditorBtn" class="xbtn">×</button></div><div class="formGrid"><input id="letterIdInput" hidden/><label class="wide">Tieu de <input id="letterTitleInput" placeholder="Thư gửi Mỹ Anh năm 18 tuổi"/></label><label>Tuoi muon gui <input id="letterTargetAgeInput" placeholder="18"/></label><label>Ngay muon gui <input id="letterTargetDateInput" type="date"/></label><label class="wide">Noi dung <textarea id="letterBodyInput" rows="8" placeholder="Viet nhung dieu muon gui cho con trong tuong lai..."></textarea></label></div><div class="modalActions"><button id="saveFutureLetterBtn" class="primary">Luu thu</button></div></div></aside>
 <aside id="futureLetterViewer" class="modal"><div class="viewerPanel"><div class="modalHead"><h3 id="letterViewerTitle">Thu gui con</h3><button id="closeLetterViewerBtn" class="xbtn">×</button></div><div id="letterViewerBody" class="viewerBody"></div></div></aside>
+<aside id="importPreview" class="modal"><div class="modalPanel"><div class="modalHead"><h3>Xem trước khôi phục</h3><button id="closeImportPreviewBtn" class="xbtn">×</button></div><div class="importPreviewBody">
+  <h4>Nguồn backup</h4>
+  <div class="importPreviewGrid">
+    <div><b id="importPreviewSource">-</b><span>Nguồn backup</span></div>
+    <div><b id="importPreviewVersion">-</b><span>Phiên bản backup</span></div>
+    <div><b id="importPreviewSchema">-</b><span>Schema</span></div>
+    <div><b id="importPreviewExportedAt">-</b><span>Ngày export</span></div>
+    <div><b id="importPreviewManifest">-</b><span>Có manifest</span></div>
+    <div><b id="importPreviewChecksum">-</b><span>Có checksum</span></div>
+    <div><b id="importPreviewMemoryCount">0</b><span>Số ký ức</span></div>
+    <div><b id="importPreviewPhotoCount">0</b><span>Số ảnh offline</span></div>
+    <div><b id="importPreviewLetterCount">0</b><span>Số thư gửi con</span></div>
+    <div><b id="importPreviewOnlineCount">0</b><span>Số link online</span></div>
+    <div><b id="importPreviewAddCount">0</b><span>Số record thêm mới</span></div>
+    <div><b id="importPreviewConflictCount">0</b><span>Số record trùng ID</span></div>
+  </div>
+  <h4>Cảnh báo</h4>
+  <pre id="importPreviewWarnings" class="importPreviewText"></pre>
+  <pre id="importPreviewConflictDetails" class="importPreviewText"></pre>
+  <h4>Chọn cách import</h4>
+  <div class="importStrategyList">
+    <label><input type="radio" name="importStrategy" value="skipExisting" checked/> Skip existing - chỉ thêm record chưa có</label>
+    <label><input type="radio" name="importStrategy" value="overwriteExisting"/> Overwrite existing - ghi đè record trùng ID</label>
+    <label><input type="radio" name="importStrategy" value="duplicateAsNew"/> Duplicate as new - tạo bản sao mới nếu trùng ID</label>
+  </div>
+</div><div class="modalActions"><button id="cancelImportPreviewBtn" class="secondary">Cancel</button><button id="confirmImportPreviewBtn" class="primary">Import</button></div></div></aside>
 <script src="vendor/jszip.min.js"></script>
-<script type="module" src="src/main.js?v=5.2"></script></body></html>
+<script type="module" src="src/main.js?v=5.4"></script></body></html>

@@ -27,8 +27,11 @@ import {
   exportBackupJson,
   exportMemoryTxt,
   exportZipBackup,
-  importBackupFile,
 } from "./services/backup-export-service.js";
+import {
+  createImportPreview,
+  prepareImportRecords,
+} from "./services/import-preview-service.js";
 import { getBrowserStorageEstimate } from "./services/storage-quota-service.js";
 import {
   chooseOfflineFolder,
@@ -68,6 +71,12 @@ import {
   openSettings,
   readSettingsValues,
 } from "./ui/settings-renderer.js";
+import {
+  bindImportPreviewActions,
+  closeImportPreview,
+  openImportPreview,
+  readImportStrategy,
+} from "./ui/import-preview-renderer.js";
 import { renderAgeFilter, renderTimeline } from "./ui/timeline-renderer.js";
 import { closeViewer, openViewer } from "./ui/viewer-renderer.js";
 import { dateFromYYMMDD, yymmddFromDate } from "./utils/date.js";
@@ -84,6 +93,7 @@ let currentAge = "all";
 let settings = loadSettings();
 let backupHealth = loadBackupHealth();
 let storageEstimate = { supported: false };
+let pendingImportPreview = null;
 
 function loadSettings() {
   try {
@@ -471,13 +481,51 @@ async function exportZipOrFallback() {
 
 async function handleImport(file) {
   try {
-    if (!confirm("Import se them/cap nhat ky niem tu backup. Tiep tuc?")) return;
-    await importBackupFile(file, importData, persistSettings);
+    pendingImportPreview = await createImportPreview(file, {
+      profiles,
+      memories,
+      futureLetters,
+    });
+    openImportPreview(pendingImportPreview);
+  } catch (error) {
+    toast(`Loi import: ${error.message}`);
+  } finally {
+    $("importInput").value = "";
+  }
+}
+
+async function confirmImportPreview() {
+  if (!pendingImportPreview) return;
+  const strategy = readImportStrategy();
+  const messages = [
+    "Ban dang chuan bi import du lieu backup. Hay chac chan da export JSON/ZIP backup hien tai truoc khi tiep tuc.",
+  ];
+  if (strategy === "overwriteExisting") {
+    messages.push(
+      "Che do ghi de co the thay the ky uc hien tai neu trung ID.",
+    );
+  }
+  if (!confirm(messages.join("\n\n"))) return;
+
+  try {
+    const prepared = prepareImportRecords(pendingImportPreview, strategy);
+    await importData(prepared.memories, prepared.profiles, prepared.futureLetters);
+    if (strategy === "overwriteExisting" && pendingImportPreview.data.settings) {
+      persistSettings(pendingImportPreview.data.settings);
+    }
+    pendingImportPreview = null;
+    closeImportPreview();
     await refresh();
     toast("Da phuc hoi backup");
   } catch (error) {
     toast(`Loi import: ${error.message}`);
   }
+}
+
+function cancelImportPreview() {
+  pendingImportPreview = null;
+  closeImportPreview();
+  toast("Da huy import");
 }
 
 async function saveExistingPhotos() {
@@ -660,6 +708,10 @@ function bindEvents() {
     onExportJson: exportJsonBackup,
     onExportZip: exportZipOrFallback,
     onImportJson: () => $("importInput").click(),
+  });
+  bindImportPreviewActions({
+    onCancel: cancelImportPreview,
+    onConfirm: confirmImportPreview,
   });
 }
 

@@ -124,3 +124,24 @@ Luu y an toan du lieu:
 - Manifest va checksum giup phat hien backup bi sai lech, nhung khong thay the viec export JSON/ZIP thuong xuyen.
 - Nen luu it nhat hai ban backup o hai noi khac nhau, vi du may tinh ca nhan va Google Drive.
 - Truoc khi xoa du lieu trinh duyet, hay mo thu file JSON/ZIP va kiem tra co `manifest` hoac `backup_manifest.json`.
+
+## KHOBAUKYUC V5.4 - Restore Preview Before Import
+
+V5.4 them buoc xem truoc truoc khi import JSON. Chon file backup se khong ghi ngay vao IndexedDB.
+
+Restore preview hien thi:
+- nguon backup, phien ban backup, schema va ngay export.
+- trang thai manifest/checksum.
+- so ky uc, anh offline, thu gui con va link online trong backup.
+- so record them moi va so record trung ID.
+- canh bao voi backup cu chua co manifest/checksum.
+
+Chien luoc import:
+- `Skip existing`: chi them record chua co ID trong app hien tai.
+- `Overwrite existing`: giu hanh vi cu, record trong backup se ghi de record trung ID sau xac nhan ro rang.
+- `Duplicate as new`: voi ky uc va Future Letters trung ID, tao ID moi va them `importedFromId`, `importedAt`.
+
+Khuyen nghi an toan:
+- Luon export JSON/ZIP hien tai truoc khi import backup khac.
+- Neu chi muon kiem tra backup, chon Cancel trong preview.
+- Backup cu khong co manifest van import duoc, nhung can xem canh bao ky hon.
