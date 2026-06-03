@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=4.6"/></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#ffe9f4"/><title>KHOBAUKYUC</title><link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="style.css?v=5.2"/></head><body>
 <main class="app">
 <header class="top"><div><h1>🎀 KHOBAUKYUC</h1><p>Ky yeu tuoi tho • Offline + Google Drive + YouTube</p></div><div class="topActions"><button id="settingsBtn" class="ghost">⚙ Cai dat</button><button id="backupBtn" class="ghost">⬇ Backup</button></div></header>
 <section class="familyHome"><div class="homeIntro"><div class="spark">✨</div><p class="homeLabel">Kho ky uc cua</p><h2>Mỹ Anh</h2><p>Luu lai tung buc anh, cau noi va khoanh khac nho de ca nha co the mo lai bat cu luc nao.</p><div class="heroActions"><button id="reopenMemoryBtn" class="primary">Mở lại một ký ức</button><button id="addTodayBtn" class="secondary">Thêm ký ức hôm nay</button><button id="addBtn" class="chip">+ Them ky niem</button><button id="storyBtn" class="chip">Story mode</button></div></div><div class="homeSide"><div class="stats"><div><b id="memoryCount">0</b><span>Ky niem</span></div><div><b id="photoCount">0</b><span>Anh offline</span></div><div><b id="onlineCount">0</b><span>Link online</span></div><div><b id="storageSize">0 MB</b><span>Dung luong</span></div></div><div class="recentBox"><h3>Ky uc gan day</h3><div id="recentMemories" class="recentMemories"><p>Chua co ky niem nao.</p></div></div></div></section>
@@ -38,19 +38,26 @@
 <section class="backupHealthBox">
   <div class="backupHealthHead">
     <div>
-      <h3>Backup Health Check</h3>
-      <p>Theo doi suc khoe du lieu va lich backup dinh ky.</p>
+      <h3>Backup Health / Storage Health</h3>
+      <p>Theo doi suc khoe du lieu, lich backup dinh ky va dung luong trinh duyet.</p>
     </div>
     <div id="healthBackupStatus" class="backupStatus warning">Warning</div>
   </div>
   <div class="backupHealthGrid">
     <div><b id="healthMemoryCount">0</b><span>Total memories</span></div>
     <div><b id="healthPhotoCount">0</b><span>Total offline photos</span></div>
-    <div><b id="healthStorageSize">0 MB</b><span>Estimated storage size</span></div>
+    <div><b id="healthStorageSize">0 MB</b><span>Estimated offline photo size</span></div>
+    <div><b id="healthLetterCount">0</b><span>Total future letters</span></div>
     <div><b id="healthOnlineCount">0</b><span>Total online links</span></div>
     <div><b id="healthLastBackup">Chua co</b><span>Last backup date</span></div>
     <div><b id="healthDaysSinceBackup">Chua co</b><span>Days since last backup</span></div>
+    <div><b id="browserStorageUsed">-</b><span>Dung lượng trình duyệt - Đã dùng</span></div>
+    <div><b id="browserStorageQuota">-</b><span>Tổng giới hạn</span></div>
+    <div><b id="browserStorageRemaining">-</b><span>Còn lại</span></div>
+    <div><b id="browserStoragePercent">-</b><span>Usage percentage</span></div>
+    <div><b id="browserStorageRisk" class="backupStatus warning">-</b><span>Mức rủi ro</span></div>
   </div>
+  <p id="browserStorageMessage" class="storageHelpText">Dung lượng trình duyệt không phải kho lưu trữ vĩnh viễn; hãy export JSON/ZIP thường xuyên.</p>
   <div class="backupHealthActions">
     <button id="healthExportJsonBtn" class="chip">Export JSON</button>
     <button id="healthExportZipBtn" class="chip">Export ZIP</button>
@@ -87,4 +94,4 @@
 <aside id="futureLetterEditor" class="modal"><div class="modalPanel"><div class="modalHead"><h3 id="letterEditorTitle">Viet thu gui con</h3><button id="closeLetterEditorBtn" class="xbtn">×</button></div><div class="formGrid"><input id="letterIdInput" hidden/><label class="wide">Tieu de <input id="letterTitleInput" placeholder="Thư gửi Mỹ Anh năm 18 tuổi"/></label><label>Tuoi muon gui <input id="letterTargetAgeInput" placeholder="18"/></label><label>Ngay muon gui <input id="letterTargetDateInput" type="date"/></label><label class="wide">Noi dung <textarea id="letterBodyInput" rows="8" placeholder="Viet nhung dieu muon gui cho con trong tuong lai..."></textarea></label></div><div class="modalActions"><button id="saveFutureLetterBtn" class="primary">Luu thu</button></div></div></aside>
 <aside id="futureLetterViewer" class="modal"><div class="viewerPanel"><div class="modalHead"><h3 id="letterViewerTitle">Thu gui con</h3><button id="closeLetterViewerBtn" class="xbtn">×</button></div><div id="letterViewerBody" class="viewerBody"></div></div></aside>
 <script src="vendor/jszip.min.js"></script>
-<script type="module" src="src/main.js?v=4.6"></script></body></html>
+<script type="module" src="src/main.js?v=5.2"></script></body></html>

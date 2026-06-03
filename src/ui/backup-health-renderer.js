@@ -1,9 +1,14 @@
 import { $ } from "../utils/dom.js";
+import {
+  formatBytes,
+  getStorageRiskLevel,
+} from "../services/storage-quota-service.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export function getBackupHealth(memories, lastBackupAt) {
+export function getBackupHealth(memories, futureLetters, lastBackupAt) {
   const totalMemories = memories.length;
+  const totalFutureLetters = futureLetters.length;
   const totalOfflinePhotos = memories.reduce(
     (sum, memory) => sum + (memory.photos?.length || 0),
     0,
@@ -31,6 +36,7 @@ export function getBackupHealth(memories, lastBackupAt) {
 
   return {
     totalMemories,
+    totalFutureLetters,
     totalOfflinePhotos,
     estimatedStorageBytes,
     totalOnlineLinks,
@@ -40,11 +46,18 @@ export function getBackupHealth(memories, lastBackupAt) {
   };
 }
 
-export function renderBackupHealth(memories, lastBackupAt, checklistText) {
-  const health = getBackupHealth(memories, lastBackupAt);
+export function renderBackupHealth(
+  memories,
+  futureLetters,
+  lastBackupAt,
+  checklistText,
+  storageEstimate,
+) {
+  const health = getBackupHealth(memories, futureLetters, lastBackupAt);
   $("healthMemoryCount").textContent = health.totalMemories;
   $("healthPhotoCount").textContent = health.totalOfflinePhotos;
   $("healthStorageSize").textContent = formatBytes(health.estimatedStorageBytes);
+  $("healthLetterCount").textContent = health.totalFutureLetters;
   $("healthOnlineCount").textContent = health.totalOnlineLinks;
   $("healthLastBackup").textContent = health.lastBackupAt
     ? new Date(health.lastBackupAt).toLocaleDateString("vi-VN")
@@ -54,6 +67,7 @@ export function renderBackupHealth(memories, lastBackupAt, checklistText) {
   $("healthBackupStatus").textContent = health.status.label;
   $("healthBackupStatus").className = `backupStatus ${health.status.className}`;
   $("healthChecklistText").textContent = checklistText;
+  renderBrowserStorage(storageEstimate);
 }
 
 export function bindBackupHealthActions({
@@ -76,13 +90,26 @@ function getBackupStatus(daysSinceBackup) {
   return { label: "Safe", className: "safe" };
 }
 
-function formatBytes(bytes) {
-  if (!bytes) return "0 MB";
-  const units = ["B", "KB", "MB", "GB"];
-  let index = 0;
-  while (bytes >= 1024 && index < units.length - 1) {
-    bytes /= 1024;
-    index += 1;
+function renderBrowserStorage(storageEstimate) {
+  if (!storageEstimate?.supported) {
+    $("browserStorageUsed").textContent = "-";
+    $("browserStorageQuota").textContent = "-";
+    $("browserStorageRemaining").textContent = "-";
+    $("browserStoragePercent").textContent = "-";
+    $("browserStorageRisk").textContent = "-";
+    $("browserStorageRisk").className = "backupStatus warning";
+    $("browserStorageMessage").textContent =
+      "Trình duyệt này chưa hỗ trợ đo dung lượng lưu trữ.";
+    return;
   }
-  return `${bytes.toFixed(index ? 1 : 0)} ${units[index]}`;
+
+  const risk = storageEstimate.risk || getStorageRiskLevel(storageEstimate.percentage);
+  $("browserStorageUsed").textContent = formatBytes(storageEstimate.used);
+  $("browserStorageQuota").textContent = formatBytes(storageEstimate.quota);
+  $("browserStorageRemaining").textContent = formatBytes(storageEstimate.remaining);
+  $("browserStoragePercent").textContent = `${storageEstimate.percentage.toFixed(1)}%`;
+  $("browserStorageRisk").textContent = risk.label;
+  $("browserStorageRisk").className = `backupStatus ${risk.className}`;
+  $("browserStorageMessage").textContent =
+    `${risk.message} Dung lượng trình duyệt không phải kho lưu trữ vĩnh viễn; hãy export JSON/ZIP thường xuyên.`;
 }

@@ -29,6 +29,7 @@ import {
   exportZipBackup,
   importBackupFile,
 } from "./services/backup-export-service.js";
+import { getBrowserStorageEstimate } from "./services/storage-quota-service.js";
 import {
   chooseOfflineFolder,
   hasOfflineDirectory,
@@ -82,6 +83,7 @@ let editingId = null;
 let currentAge = "all";
 let settings = loadSettings();
 let backupHealth = loadBackupHealth();
+let storageEstimate = { supported: false };
 
 function loadSettings() {
   try {
@@ -110,7 +112,13 @@ function loadBackupHealth() {
 function markBackupComplete() {
   backupHealth = { lastBackupAt: Date.now() };
   localStorage.setItem(BACKUP_HEALTH_KEY, JSON.stringify(backupHealth));
-  renderBackupHealth(memories, backupHealth.lastBackupAt, backupChecklist());
+  renderBackupHealth(
+    memories,
+    futureLetters,
+    backupHealth.lastBackupAt,
+    backupChecklist(),
+    storageEstimate,
+  );
 }
 
 async function refresh() {
@@ -121,6 +129,7 @@ async function refresh() {
   futureLetters = (await getAllFutureLetters()).sort(
     (a, b) => (b.updatedAt || 0) - (a.updatedAt || 0),
   );
+  storageEstimate = await getStorageEstimate();
   renderAll();
 }
 
@@ -140,9 +149,23 @@ function renderAll() {
     onDelete: deleteFutureLetterById,
   });
   renderStats(memories);
-  renderBackupHealth(memories, backupHealth.lastBackupAt, backupChecklist());
+  renderBackupHealth(
+    memories,
+    futureLetters,
+    backupHealth.lastBackupAt,
+    backupChecklist(),
+    storageEstimate,
+  );
   updateCurrentPathBox();
   updateFsStatus();
+}
+
+async function getStorageEstimate() {
+  try {
+    return await getBrowserStorageEstimate();
+  } catch {
+    return { supported: false };
+  }
 }
 
 function filteredMemories() {
