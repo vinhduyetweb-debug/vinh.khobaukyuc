@@ -5,8 +5,8 @@ import {
   normalizeMemory,
 } from "../utils/schema.js";
 
-const DB_NAME = "khobaukyuc_db_v1";
-const DB_VERSION = 3;
+export const DB_NAME = "khobaukyuc_db_v1";
+export const DB_VERSION = 3;
 const MEMORY_STORE = "memories";
 const PROFILE_STORE = "profiles";
 const LETTER_STORE = "futureLetters";

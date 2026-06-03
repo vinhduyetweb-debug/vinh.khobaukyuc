@@ -27,6 +27,8 @@ export function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   anchor.href = url;
   anchor.download = filename;
+  document.body.appendChild(anchor);
   anchor.click();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }

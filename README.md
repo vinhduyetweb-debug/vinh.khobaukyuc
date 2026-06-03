@@ -89,3 +89,38 @@ Huong tiep theo: `KHOBAUKYUC V5 STORAGE & DRIVE PRO`
 - Safer restore preview.
 - Better long-term media storage strategy.
 - Automated test suite neu phu hop.
+
+## KHOBAUKYUC V5.3 - Backup Manifest and Checksum
+
+V5.3 bo sung manifest cho ban backup de viec luu tru dai han de kiem tra hon.
+
+JSON backup hien co them truong `manifest` nhung van giu cac truong cu:
+- `app_name`
+- `version`
+- `schemaVersion`
+- `root_folder`
+- `exported_at`
+- `folder_structure`
+- `settings`
+- `profiles`
+- `memories`
+- `futureLetters`
+
+ZIP backup hien co them file:
+- `KHOBAUKYUC/00_CONFIG/backup_manifest.json`
+
+File ZIP van giu:
+- `KHOBAUKYUC/00_CONFIG/memories.json`
+- `KHOBAUKYUC/00_CONFIG/folder_map.json`
+- cac thu muc tuoi, anh offline, ghi chu TXT va Future Letters TXT.
+
+Checksum:
+- Dung `SHA-256` bang Web Crypto API neu trinh duyet ho tro.
+- Neu trinh duyet khong ho tro, backup van duoc tao va manifest se ghi canh bao.
+- `payloadChecksum` giup kiem tra noi dung JSON backup chinh.
+- `recordChecksums` giup kiem tra profile, memory, photo va Future Letter rieng le.
+
+Luu y an toan du lieu:
+- Manifest va checksum giup phat hien backup bi sai lech, nhung khong thay the viec export JSON/ZIP thuong xuyen.
+- Nen luu it nhat hai ban backup o hai noi khac nhau, vi du may tinh ca nhan va Google Drive.
+- Truoc khi xoa du lieu trinh duyet, hay mo thu file JSON/ZIP va kiem tra co `manifest` hoac `backup_manifest.json`.

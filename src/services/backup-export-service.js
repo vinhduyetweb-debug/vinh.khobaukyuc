@@ -1,11 +1,12 @@
 import { AGE_STAGES, DEFAULT_AGE_STAGE } from "../constants/age-stages.js";
 import { EVENT_TYPES } from "../constants/event-types.js";
 import { FOLDER_STRUCTURE, ROOT_FOLDER } from "../constants/app.js";
-import { DEFAULT_CHILD_PROFILE, SCHEMA_VERSION } from "../constants/schema.js";
+import { DEFAULT_CHILD_PROFILE } from "../constants/schema.js";
 import { yymmddFromDate, todayIso } from "../utils/date.js";
 import { downloadBlob } from "../utils/dom.js";
 import { safeFileBase } from "../utils/filename.js";
 import { isBackupData } from "../utils/validators.js";
+import { createBackupPackage } from "./backup-manifest-service.js";
 import {
   normalizeChildProfile,
   normalizeFutureLetter,
@@ -59,19 +60,14 @@ export function futureLetterTxtContent(letter) {
   ].join("\n");
 }
 
-export function exportBackupJson(memories, profiles, settings, futureLetters = []) {
-  const backup = {
-    app_name: "KHOBAUKYUC",
-    version: "4.0",
-    schemaVersion: SCHEMA_VERSION,
-    root_folder: ROOT_FOLDER,
-    exported_at: new Date().toISOString(),
-    folder_structure: FOLDER_STRUCTURE,
+export async function exportBackupJson(memories, profiles, settings, futureLetters = []) {
+  const backup = await createBackupPackage({
     settings,
     profiles: profiles.map(normalizeChildProfile),
     memories: memories.map(normalizeMemory),
     futureLetters: futureLetters.map(normalizeFutureLetter),
-  };
+    folderStructure: FOLDER_STRUCTURE,
+  });
   const filename = `${yymmddFromDate(todayIso())}_backup_memories.json`;
   downloadBlob(
     new Blob([JSON.stringify(backup, null, 2)], {
@@ -128,21 +124,19 @@ export async function exportZipBackup(
   const specialEvents = rootZip.folder("SU_KIEN_DAC_BIET");
   EVENT_TYPES.forEach((eventType) => specialEvents.folder(eventType));
 
-  const backup = {
-    app_name: "KHOBAUKYUC",
-    version: "4.0",
-    schemaVersion: SCHEMA_VERSION,
-    root_folder: ROOT_FOLDER,
-    exported_at: new Date().toISOString(),
-    folder_structure: FOLDER_STRUCTURE,
+  const backup = await createBackupPackage({
     settings,
     profiles: profiles.map(normalizeChildProfile),
     memories: memories.map(normalizeMemory),
     futureLetters: futureLetters.map(normalizeFutureLetter),
-  };
+    folderStructure: FOLDER_STRUCTURE,
+  });
   rootZip
     .folder("00_CONFIG")
     .file("memories.json", JSON.stringify(backup, null, 2));
+  rootZip
+    .folder("00_CONFIG")
+    .file("backup_manifest.json", JSON.stringify(backup.manifest, null, 2));
   rootZip.folder("00_CONFIG").file(
     "folder_map.json",
     JSON.stringify(

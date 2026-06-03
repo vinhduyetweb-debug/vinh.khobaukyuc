@@ -32,6 +32,8 @@
 .backupHealthGrid .backupStatus{display:inline-block;font-size:12px}
 .backupHealthActions{display:flex;gap:7px;flex-wrap:wrap}
 .storageHelpText{margin:0;color:#8b6a16;background:#fff7e2;border:1px solid #ffe2ae;border-radius:16px;padding:10px;font-size:13px;line-height:1.45}
+.manifestHealthNote{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;background:#fffaff;border:1px solid #ffe0f0;border-radius:16px;padding:10px}
+.manifestHealthNote div{min-width:0}.manifestHealthNote b{display:block;color:#9b4d7e;font-size:14px;overflow-wrap:anywhere}.manifestHealthNote span{display:block;color:#9b7790;font-size:12px;margin-top:3px}.manifestHealthNote p{grid-column:1/-1;margin:0;color:#7f5570;font-size:13px;line-height:1.45}
 .backupChecklistText{white-space:pre-wrap;background:#fff6fb;border:1px dashed #ffd4eb;border-radius:16px;padding:10px;margin:0;color:#7f5570;font-size:12px;line-height:1.45}
 @media(max-width:900px){.backupHealthHead{display:grid}.backupHealthGrid{grid-template-columns:repeat(2,1fr)}}
 

@@ -445,8 +445,8 @@ function copyStructure() {
   );
 }
 
-function exportJsonBackup() {
-  exportBackupJson(memories, profiles, settings, futureLetters);
+async function exportJsonBackup() {
+  await exportBackupJson(memories, profiles, settings, futureLetters);
   markBackupComplete();
   toast("Da export backup JSON");
 }
@@ -465,7 +465,7 @@ async function exportZipOrFallback() {
     return;
   }
   toast("Can internet lan dau de tai JSZip hoac dung Backup JSON.");
-  exportBackupJson(memories, profiles, settings, futureLetters);
+  await exportBackupJson(memories, profiles, settings, futureLetters);
   markBackupComplete();
 }
 
