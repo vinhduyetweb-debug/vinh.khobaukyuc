@@ -42,3 +42,50 @@ Bản V1 test/list thư mục root public bằng API Key. Quét đệ quy và OA
 - Nut `Luu anh hien co ra thu muc` de dong bo anh da luu trong IndexedDB ra thu muc that.
 - Nut `Export ZIP` de xuat toan bo cau truc KHOBAUKYUC kem anh offline, ghi chu TXT, memories.json.
 - Fallback cho iPhone/iPad: neu Safari khong ho tro chon thu muc, dung IndexedDB + Export ZIP.
+
+## KHOBAUKYUC V4 PERSONAL PRO - QA PASS
+
+Release checkpoint: `KHOBAUKYUC_V4_PERSONAL_PRO_QA_PASS`
+
+Trang thai:
+- QA result: PASS.
+- Deployment compatibility: PASS.
+- Data safety: PASS.
+- No absolute paths: PASS.
+
+V4 Personal Pro da qua vong kiem tra cuoi voi cac luong chinh:
+- App mo tu `index.html`.
+- Static Vercel deployment van dung `outputDirectory: "."` va empty build command.
+- Memories cu load tu IndexedDB sau refresh.
+- Them, sua, xoa memory hoat dong.
+- Upload va nen anh hoat dong.
+- Backup JSON, import JSON, export ZIP hoat dong.
+- File System Access fallback hoat dong.
+- Search/filter va random memory hoat dong.
+- Future Letters tao, sua, xem, xoa, backup, ZIP, import va persist sau refresh.
+- Khong co console errors trong normal usage.
+
+Manual backup checklist:
+1. Mo app KHOBAUKYUC tren trinh duyet dang luu du lieu.
+2. Bam `Export JSON` trong Backup Health Check.
+3. Bam `Export ZIP` de luu cau truc kem anh offline va Future Letters.
+4. Luu ca hai file vao thu muc backup an toan, vi du `KHOBAUKYUC/00_CONFIG/backup/`.
+5. Neu co Google Drive, upload ban backup JSON va ZIP len thu muc KHOBAUKYUC.
+6. Sau khi backup, kiem tra ngay backup trong Backup Health Check.
+7. Khong xoa du lieu trong trinh duyet cho den khi da mo thu file backup tren may khac hoac profile khac.
+
+Known limitations:
+- ZIP export van phu thuoc JSZip CDN.
+- File System Access API phu thuoc trinh duyet.
+- iPhone/Safari dung IndexedDB + JSON/ZIP export fallback.
+- Google Drive hien van o muc public/API-key/link based, chua co OAuth.
+- Chua co automated test suite.
+
+Huong tiep theo: `KHOBAUKYUC V5 STORAGE & DRIVE PRO`
+- Local bundled ZIP library.
+- Storage quota dashboard.
+- Backup integrity checksums.
+- Optional Drive folder mapping.
+- Safer restore preview.
+- Better long-term media storage strategy.
+- Automated test suite neu phu hop.
