@@ -182,3 +182,34 @@ Checklist khuyen nghi:
 - Luu anh/video goc o it nhat 2 noi.
 - Kiem tra file ZIP mo duoc sau khi export.
 - Khong doi ten JSON thanh ZIP thu cong.
+
+## KHOBAUKYUC V5.6 - Final QA Release Checkpoint
+
+Release checkpoint: `KHOBAUKYUC_V5_STORAGE_DRIVE_PRO_QA_PASS`
+
+Trang thai:
+- QA result: PASS.
+- Static Vercel deployment compatibility: PASS.
+- Data safety checks: PASS.
+- No IndexedDB schema change: PASS.
+- No absolute paths: PASS.
+
+V5.1-V5.5 da qua kiem tra cuoi:
+- App mo tu `index.html` va render timeline.
+- Existing IndexedDB data load lai sau refresh.
+- Them, sua, xoa ky uc hoat dong.
+- Upload PNG va nen thanh JPEG preview hoat dong.
+- Future Letters tao, xem, sua, xoa hoat dong.
+- Storage Quota Dashboard va Long-term Media Strategy hien thi.
+- JSON backup co manifest va `payloadChecksum`.
+- ZIP backup mo duoc va co `memories.json`, `backup_manifest.json`, `media_storage_strategy.txt`, `folder_map.json`.
+- Restore Preview hien truoc khi import.
+- Cancel va Skip existing khong ghi de du lieu.
+- Overwrite existing co canh bao ro.
+- Duplicate as new tao ban sao ky uc va Future Letter.
+
+Nhac an toan du lieu:
+- Trinh duyet khong phai kho luu tru vinh vien.
+- Luon export JSON/ZIP truoc khi import backup khac.
+- Luu anh/video goc o it nhat hai noi.
+- Kiem tra file ZIP mo duoc sau khi export.
