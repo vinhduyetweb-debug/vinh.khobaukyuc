@@ -6,12 +6,21 @@ export function getMediaStorageSummary(memories, storageEstimate) {
   const storagePercentage = storageEstimate?.supported
     ? storageEstimate.percentage
     : null;
+  const uploadQueue = getMediaUploadQueue(memories);
   const summary = {
     totalOfflinePhotos: countOfflinePhotos(memories),
     estimatedPhotoBytes,
     totalDriveImageLinks: countByField(memories, "drive_image_folder"),
     totalYoutubeLinks: countByField(memories, "youtube_link"),
     totalDriveVideoLinks: countByField(memories, "drive_video_link"),
+    memoriesWithOfflinePhotosMissingDrive: uploadQueue.filter((item) =>
+      item.reasons.includes("photo"),
+    ).length,
+    memoriesWithYoutubeMissingDriveVideo: uploadQueue.filter((item) =>
+      item.reasons.includes("video"),
+    ).length,
+    memoriesWithoutExternalMedia: memories.filter(hasNoExternalMedia).length,
+    uploadQueue,
     storagePercentage,
   };
   return {
@@ -55,6 +64,27 @@ export function getMediaRiskLevel(summary) {
   };
 }
 
+export function getMediaUploadQueue(memories) {
+  return memories
+    .map((memory) => {
+      const reasons = [];
+      if ((memory.photos || []).length && !memory.drive_image_folder) {
+        reasons.push("photo");
+      }
+      if (memory.youtube_link && !memory.drive_video_link) {
+        reasons.push("video");
+      }
+      return {
+        id: memory.id,
+        title: memory.title || "Ky niem",
+        dateCode: memory.date_code || "",
+        ageStage: memory.age_stage || "",
+        reasons,
+      };
+    })
+    .filter((item) => item.reasons.length);
+}
+
 export function mediaStorageStrategyText(exportedAt = new Date().toISOString()) {
   return [
     "KHOBAUKYUC - CHIEN LUOC LUU ANH/VIDEO DAI HAN",
@@ -94,4 +124,12 @@ function estimatePhotoBytes(memories) {
 
 function countByField(memories, fieldName) {
   return memories.reduce((sum, memory) => sum + (memory[fieldName] ? 1 : 0), 0);
+}
+
+function hasNoExternalMedia(memory) {
+  return !(
+    memory.drive_image_folder ||
+    memory.youtube_link ||
+    memory.drive_video_link
+  );
 }

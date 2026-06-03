@@ -213,3 +213,25 @@ Nhac an toan du lieu:
 - Luon export JSON/ZIP truoc khi import backup khac.
 - Luu anh/video goc o it nhat hai noi.
 - Kiem tra file ZIP mo duoc sau khi export.
+
+## KHOBAUKYUC V6.0 - Family Drive Workflow Release
+
+V6.0 bo sung quy trinh luu anh/video goc tren Google Drive theo cach thu cong,
+khong them backend, OAuth, Drive sync hoac thay doi IndexedDB schema.
+
+Tinh nang:
+- Drive Root Folder Link trong Cai dat.
+- Suggested Filename va Suggested Drive Path trong Quick Add va Full Editor.
+- Link Drive/YouTube co the nhap ngay trong Quick Add.
+- Kiem tra dinh dang link Google Drive va YouTube truoc khi luu.
+- Media Coverage summary de tim ky niem con thieu link media goc.
+- Media Upload Queue de mo lai ky niem va bo sung link Drive.
+- Family Drive Checklist de copy cho nguoi dung.
+- Thong bao ro rang rang upload, di chuyen va chia se file Drive van lam thu cong.
+
+An toan du lieu:
+- Khong thay doi IndexedDB schema.
+- Khong thay doi JSON backup, ZIP backup, manifest, checksum hoac Restore Preview.
+- Anh nen trong app van chi dung de xem nhanh.
+- Anh/video goc can luu o it nhat hai noi.
+- Du lieu tren cac dien thoai khong tu dong dong bo voi nhau.

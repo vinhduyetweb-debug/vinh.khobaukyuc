@@ -4,6 +4,7 @@ import {
   getStorageRiskLevel,
 } from "../services/storage-quota-service.js";
 import { getMediaStorageSummary } from "../services/media-storage-strategy-service.js";
+import { escapeHtml } from "../utils/dom.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -53,6 +54,7 @@ export function renderBackupHealth(
   lastBackupAt,
   checklistText,
   storageEstimate,
+  mediaWorkflow = {},
 ) {
   const health = getBackupHealth(memories, futureLetters, lastBackupAt);
   $("healthMemoryCount").textContent = health.totalMemories;
@@ -69,7 +71,7 @@ export function renderBackupHealth(
   $("healthBackupStatus").className = `backupStatus ${health.status.className}`;
   $("healthChecklistText").textContent = checklistText;
   renderBrowserStorage(storageEstimate);
-  renderMediaStrategy(memories, storageEstimate);
+  renderMediaStrategy(memories, storageEstimate, mediaWorkflow);
 }
 
 export function bindBackupHealthActions({
@@ -92,13 +94,18 @@ function getBackupStatus(daysSinceBackup) {
   return { label: "Safe", className: "safe" };
 }
 
-function renderMediaStrategy(memories, storageEstimate) {
+function renderMediaStrategy(memories, storageEstimate, mediaWorkflow) {
   const summary = getMediaStorageSummary(memories, storageEstimate);
   $("mediaOfflinePhotoCount").textContent = summary.totalOfflinePhotos;
   $("mediaOfflinePhotoSize").textContent = formatBytes(summary.estimatedPhotoBytes);
   $("mediaDriveImageLinks").textContent = summary.totalDriveImageLinks;
   $("mediaYoutubeLinks").textContent = summary.totalYoutubeLinks;
   $("mediaDriveVideoLinks").textContent = summary.totalDriveVideoLinks;
+  $("mediaMissingDrivePhotoCount").textContent =
+    summary.memoriesWithOfflinePhotosMissingDrive;
+  $("mediaMissingDriveVideoCount").textContent =
+    summary.memoriesWithYoutubeMissingDriveVideo;
+  $("mediaNoExternalCount").textContent = summary.memoriesWithoutExternalMedia;
   $("mediaBrowserUsage").textContent =
     summary.storagePercentage === null
       ? "Chua ho tro"
@@ -106,6 +113,38 @@ function renderMediaStrategy(memories, storageEstimate) {
   $("mediaRiskLevel").textContent = summary.risk.label;
   $("mediaRiskLevel").className = `backupStatus ${summary.risk.className}`;
   $("mediaRecommendation").textContent = summary.risk.recommendation;
+  renderMediaUploadQueue(summary.uploadQueue, mediaWorkflow.onEditMemory);
+}
+
+function renderMediaUploadQueue(queue, onEditMemory) {
+  const list = $("mediaUploadQueue");
+  if (!queue.length) {
+    list.innerHTML =
+      '<p class="mediaQueueEmpty">Khong co ky niem nao dang cho bo sung link Drive.</p>';
+    return;
+  }
+  list.innerHTML = queue
+    .map((item) => {
+      const reasonText = item.reasons
+        .map((reason) =>
+          reason === "photo"
+            ? "Anh offline chua co link Drive anh goc"
+            : "YouTube chua co link Drive video goc",
+        )
+        .join(" • ");
+      return `<article class="mediaQueueItem">
+        <div><b>${escapeHtml(item.title)}</b><span>${escapeHtml(
+          [item.dateCode, item.ageStage].filter(Boolean).join(" • "),
+        )}</span><small>${escapeHtml(reasonText)}</small></div>
+        <button class="mini mediaQueueEdit" type="button" data-memory-id="${escapeHtml(
+          item.id,
+        )}">Bo sung link</button>
+      </article>`;
+    })
+    .join("");
+  list.querySelectorAll(".mediaQueueEdit").forEach((button) => {
+    button.onclick = () => onEditMemory?.(button.dataset.memoryId);
+  });
 }
 
 function renderBrowserStorage(storageEstimate) {

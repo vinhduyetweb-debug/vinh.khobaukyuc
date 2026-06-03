@@ -69,3 +69,9 @@ html,body,.app{max-width:100%;overflow-x:hidden}
 .importPreviewGrid div{background:#fffaff;border:1px solid #ffe0f0;border-radius:16px;padding:12px;min-width:0}.importPreviewGrid b{display:block;color:#9b4d7e;font-size:16px;overflow-wrap:anywhere}.importPreviewGrid span{display:block;color:#9b7790;font-size:12px;margin-top:3px}
 .importPreviewText{white-space:pre-wrap;background:#fff6fb;border:1px dashed #ffd4eb;border-radius:16px;padding:10px;margin:0;color:#7f5570;font-size:12px;line-height:1.45}
 .importStrategyList{display:grid;gap:8px}.importStrategyList label{display:flex;gap:8px;align-items:flex-start;background:#fffaff;border:1px solid #ffe0f0;border-radius:16px;padding:10px;color:#7f5570;font-weight:850}.importStrategyList input{margin-top:3px}
+
+/* V6.0 Family Drive Workflow */
+.workflowField{display:grid}.manualDriveNotice{display:grid;gap:3px;background:#fff7e2;border:1px solid #ffe2ae;border-radius:14px;padding:10px;color:#7f5e18;font-size:13px;line-height:1.45}.manualDriveNotice b{color:#8b6a16}.manualDriveNotice span{color:#8b6a16}
+.mediaQueueBox{display:grid;gap:8px;background:#fff;border:1px solid #ffe0f0;border-radius:14px;padding:10px}.mediaQueueHead{display:grid;gap:3px}.mediaQueueHead h4{margin:0;color:#88486f}.mediaQueueHead span{color:#9b7790;font-size:12px}
+.mediaUploadQueue{display:grid;gap:7px}.mediaQueueItem{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fffaff;border:1px solid #ffe0f0;border-radius:14px;padding:10px}.mediaQueueItem div{min-width:0}.mediaQueueItem b,.mediaQueueItem span,.mediaQueueItem small{display:block;overflow-wrap:anywhere}.mediaQueueItem b{color:#7f4168}.mediaQueueItem span{margin-top:2px;color:#9b7790;font-size:12px}.mediaQueueItem small{margin-top:4px;color:#8b6a16;line-height:1.35}.mediaQueueEmpty{margin:0;color:#287a3e;font-size:13px}
+@media(max-width:900px){.mediaQueueItem{align-items:stretch;display:grid}.mediaQueueItem .mini{width:100%}}

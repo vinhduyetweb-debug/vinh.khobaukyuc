@@ -82,7 +82,11 @@ import { closeViewer, openViewer } from "./ui/viewer-renderer.js";
 import { dateFromYYMMDD, yymmddFromDate } from "./utils/date.js";
 import { $, copyText, escapeHtml, toast } from "./utils/dom.js";
 import { makeMemoryId, slug } from "./utils/filename.js";
-import { isValidDateCode } from "./utils/validators.js";
+import {
+  isValidDateCode,
+  isValidDriveUrl,
+  isValidYoutubeUrl,
+} from "./utils/validators.js";
 import { normalizeFutureLetter, normalizeMemory } from "./utils/schema.js";
 
 let memories = [];
@@ -128,6 +132,7 @@ function markBackupComplete() {
     backupHealth.lastBackupAt,
     backupChecklist(),
     storageEstimate,
+    { onEditMemory: editMemory },
   );
 }
 
@@ -165,6 +170,7 @@ function renderAll() {
     backupHealth.lastBackupAt,
     backupChecklist(),
     storageEstimate,
+    { onEditMemory: editMemory },
   );
   updateCurrentPathBox();
   updateFsStatus();
@@ -312,6 +318,18 @@ async function saveCurrentMemory() {
     toast("Ngay he thong phai la YYMMDD, vi du 260509");
     return;
   }
+  if (!isValidDriveUrl(values.driveImageFolder)) {
+    toast("Link anh goc phai la link https://drive.google.com");
+    return;
+  }
+  if (!isValidYoutubeUrl(values.youtubeLink)) {
+    toast("Link YouTube khong hop le");
+    return;
+  }
+  if (!isValidDriveUrl(values.driveVideoLink)) {
+    toast("Link video goc phai la link https://drive.google.com");
+    return;
+  }
 
   const old = editingId
     ? memories.find((memory) => memory.id === editingId)
@@ -445,6 +463,23 @@ function backupChecklist() {
     "YYMMDD_su-kien_001.jpg",
     "YYMMDD_su-kien_youtube.txt",
     "YYMMDD_su-kien_ghichu.txt",
+  ].join("\n");
+}
+
+function familyDriveChecklist() {
+  return [
+    "FAMILY DRIVE CHECKLIST - KHOBAUKYUC",
+    "",
+    "1. Upload anh/video goc len Google Drive bang thao tac thu cong.",
+    "2. Dung thu muc goc KHOBAUKYUC va chon dung giai doan tuoi.",
+    "3. Doi ten file theo Suggested Filename trong editor.",
+    "4. Dan link thu muc anh goc, link YouTube va link Drive video vao ky niem.",
+    "5. Kiem tra Media Upload Queue de bo sung cac link con thieu.",
+    "6. Khong xoa anh/video goc sau khi da luu link.",
+    "7. Export JSON sau dot nhap lieu va Export ZIP moi thang.",
+    "8. Luu anh/video goc va backup o it nhat hai noi.",
+    "",
+    "Luu y: Du lieu tren cac dien thoai khong tu dong dong bo voi nhau.",
   ].join("\n");
 }
 
@@ -603,6 +638,10 @@ function bindEvents() {
       toast("Ten root bat buoc la KHOBAUKYUC");
       return;
     }
+    if (!isValidDriveUrl(values.driveRootUrl)) {
+      toast("Drive Root Folder Link phai la link https://drive.google.com");
+      return;
+    }
     persistSettings(values);
     closeSettings();
     toast("Da luu cau hinh");
@@ -674,6 +713,8 @@ function bindEvents() {
     copyText(ageSubPaths().join("\n"), "Da copy duong dan tuoi dang xem");
   $("copyBackupChecklistBtn").onclick = () =>
     copyText(backupChecklist(), "Da copy checklist backup");
+  $("copyFamilyDriveChecklistBtn").onclick = () =>
+    copyText(familyDriveChecklist(), "Da copy Family Drive Checklist");
   $("chooseOfflineFolderBtn").onclick = async () => {
     try {
       await chooseOfflineFolder();

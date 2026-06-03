@@ -68,7 +68,7 @@ export function updateEditorHints() {
   const dateCode =
     $("dateCodeInput").value || yymmddFromDate($("dateInput").value) || "260509";
   const titleOrEvent = $("titleInput").value || eventType || "ky-niem";
-  box.innerHTML = `<b>Ten file goi y:</b><pre>${escapeHtml(
+  box.innerHTML = `<b>Suggested Filename:</b><pre>${escapeHtml(
     suggestedFileNames(dateCode, titleOrEvent).join("\n"),
   )}</pre>`;
 }
