@@ -98,6 +98,7 @@ let settings = loadSettings();
 let backupHealth = loadBackupHealth();
 let storageEstimate = { supported: false };
 let pendingImportPreview = null;
+let deferredInstallPrompt = null;
 
 function loadSettings() {
   try {
@@ -243,6 +244,70 @@ function reopenRandomMemory() {
   }
   const memory = memories[Math.floor(Math.random() * memories.length)];
   openViewer(memory);
+}
+
+function scrollToSection(id) {
+  const section = document.getElementById(id);
+  if (!section) return;
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateConnectionStatus() {
+  const status = document.getElementById("connectionStatusText");
+  if (!status) return;
+  if (navigator.onLine) {
+    status.textContent = "Dang online";
+    status.className = "pwaOnline";
+    return;
+  }
+  status.textContent = "Dang offline - du lieu tren thiet bi nay van xem duoc";
+  status.className = "pwaOffline";
+}
+
+function bindPwaControls() {
+  updateConnectionStatus();
+  window.addEventListener("online", updateConnectionStatus);
+  window.addEventListener("offline", updateConnectionStatus);
+
+  const installButton = document.getElementById("installAppBtn");
+  const manualButton = document.getElementById("manualInstallBtn");
+  const installHelp = document.getElementById("installHelpText");
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (installButton) installButton.disabled = false;
+    if (installHelp) {
+      installHelp.textContent =
+        "Trinh duyet nay ho tro cai KHOBAUKYUC vao man hinh chinh.";
+    }
+  });
+
+  if (installButton) {
+    installButton.onclick = async () => {
+      if (!deferredInstallPrompt) {
+        toast("Neu khong thay nut cai app, hay dung menu trinh duyet: Add to Home Screen hoac Install app.");
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+    };
+  }
+
+  if (manualButton) {
+    manualButton.onclick = () =>
+      toast("Mobile: mo menu trinh duyet va chon Add to Home Screen. Desktop: chon Install app neu trinh duyet ho tro.");
+  }
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {
+      // Offline shell is optional; IndexedDB and backups continue to work.
+    });
+  });
 }
 
 function editMemory(id) {
@@ -617,6 +682,8 @@ function bindEvents() {
     openEditor(null, currentAge !== "all" ? currentAge : null, "quick");
   };
   $("addTodayBtn").onclick = addTodayMemory;
+  $("viewArchiveBtn").onclick = () => scrollToSection("memoryArchive");
+  $("protectDataBtn").onclick = () => scrollToSection("backupCenter");
   $("reopenMemoryBtn").onclick = reopenRandomMemory;
   $("closeEditorBtn").onclick = closeEditor;
   $("saveMemoryBtn").onclick = saveCurrentMemory;
@@ -716,6 +783,7 @@ function bindEvents() {
     copyText(backupChecklist(), "Da copy checklist backup");
   $("copyFamilyDriveChecklistBtn").onclick = () =>
     copyText(familyDriveChecklist(), "Da copy Family Drive Checklist");
+  $("openMediaQueueBtn").onclick = () => scrollToSection("mediaUploadQueue");
   $("chooseOfflineFolderBtn").onclick = async () => {
     try {
       await chooseOfflineFolder();
@@ -763,6 +831,8 @@ async function start() {
   if (!profiles.length) await putProfile(DEFAULT_CHILD_PROFILE);
   initializeEditor();
   updateEditorHints();
+  bindPwaControls();
+  registerServiceWorker();
   bindEvents();
   await refresh();
 }

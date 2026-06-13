@@ -1,7 +1,8 @@
 {
-  "name": "KHOBAUKYUC V3",
+  "name": "KHOBAUKYUC V6.1 Family PWA Pro",
   "short_name": "KHOBAUKYUC",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#fff6fb",
   "theme_color": "#ffe9f4",

@@ -262,3 +262,22 @@ Quy tac:
 
 V6.0.1 chi thay doi goi y ten file. Khong thay doi IndexedDB schema, backup,
 import, export, manifest, checksum hoac Restore Preview.
+
+## KHOBAUKYUC V6.1 - Family PWA Pro
+
+V6.1 bo sung lop PWA/offline app shell cho gia dinh dung tren desktop va mobile.
+
+Tinh nang:
+- `manifest.json` duoc cap nhat cho Family PWA.
+- `service-worker.js` cache app shell va static assets cung project.
+- App co trang thai online/offline va huong dan cai vao man hinh chinh.
+- Home uu tien 3 hanh dong: them ky uc hom nay, xem kho ky uc, backup/bao ve du lieu.
+- Quick Add co nhac `Bo sung sau` de cha me luu nhanh truoc, them link/chi tiet sau.
+- Backup/Storage Health co nhac an toan du lieu va nut mo Media Upload Queue.
+
+Gioi han an toan:
+- Service worker khong cache Google Drive hoac YouTube.
+- Khong them backend, OAuth, Drive API moi, AI, React hay Next.js.
+- Khong doi IndexedDB schema.
+- Khong doi backup/import/export format, manifest, checksum hoac Restore Preview.
+- Browser storage khong phai kho luu tru vinh vien; van can export JSON/ZIP dinh ky.

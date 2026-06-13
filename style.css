@@ -75,3 +75,13 @@ html,body,.app{max-width:100%;overflow-x:hidden}
 .mediaQueueBox{display:grid;gap:8px;background:#fff;border:1px solid #ffe0f0;border-radius:14px;padding:10px}.mediaQueueHead{display:grid;gap:3px}.mediaQueueHead h4{margin:0;color:#88486f}.mediaQueueHead span{color:#9b7790;font-size:12px}
 .mediaUploadQueue{display:grid;gap:7px}.mediaQueueItem{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fffaff;border:1px solid #ffe0f0;border-radius:14px;padding:10px}.mediaQueueItem div{min-width:0}.mediaQueueItem b,.mediaQueueItem span,.mediaQueueItem small{display:block;overflow-wrap:anywhere}.mediaQueueItem b{color:#7f4168}.mediaQueueItem span{margin-top:2px;color:#9b7790;font-size:12px}.mediaQueueItem small{margin-top:4px;color:#8b6a16;line-height:1.35}.mediaQueueEmpty{margin:0;color:#287a3e;font-size:13px}
 @media(max-width:900px){.mediaQueueItem{align-items:stretch;display:grid}.mediaQueueItem .mini{width:100%}}
+
+/* V6.1 Family PWA Pro */
+.pwaStatusBox{background:#fff;border:1px solid #ffe0f0;border-radius:24px;box-shadow:0 12px 34px rgba(166,90,135,.1);padding:14px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.pwaStatusBox h3{margin:0;color:#88486f}.pwaStatusBox p{margin:4px 0 0;color:#9b7790;font-size:13px;line-height:1.45}
+.pwaStatusBox .pwaOnline{color:#287a3e;font-weight:850}.pwaStatusBox .pwaOffline{color:#a86b00;font-weight:850}
+.pwaActions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.pwaActions button:disabled{opacity:.55}
+.dataSafetyBox,.quickAddGuide{background:#fff7e2;border:1px solid #ffe2ae;border-radius:16px;padding:10px;color:#7f5e18;line-height:1.45}
+.dataSafetyBox h4{margin:0 0 5px;color:#8b6a16}.dataSafetyBox p{margin:0;font-size:13px}
+.quickAddGuide{display:grid!important;gap:3px;font-size:13px}.quickAddGuide b{color:#8b6a16}.quickAddGuide span{color:#8b6a16}
+@media(max-width:900px){.pwaStatusBox{display:grid}.pwaActions{justify-content:flex-start}.pwaActions .chip,.backupHealthActions .chip{width:100%}.heroActions .primary,.heroActions .secondary,.heroActions .chip{width:100%}}
